@@ -1,0 +1,357 @@
+/* Overrides on top of water.css: it styles elements, these style the few
+   structures the API pages need. Kept small on purpose — water.css is doing
+   the work. Colours reuse water.css's own custom properties so both themes
+   follow automatically. */
+
+/* The `hidden` attribute must win.
+   The filter marks non-matching entries with `hidden`, which relies on the
+   browser's own `[hidden] { display: none }`. That rule lives in the UA
+   stylesheet, so any author rule setting `display` on the same element beats
+   it and the entry stays on screen — which is exactly what `p.filter` below
+   would otherwise do, and what `.choices label` did before it. Stating it once
+   here, and
+   emphatically, keeps every future `display` rule from silently breaking
+   whatever is being hidden. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  max-width: 52rem;
+}
+
+header.masthead {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+}
+
+header.masthead h1 {
+  margin-bottom: 0.25rem;
+}
+
+.tagline {
+  color: var(--text-muted);
+  margin-top: 0;
+}
+
+/* Breadcrumb: a plain list rendered inline. */
+nav.crumbs ol {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+}
+
+nav.crumbs li {
+  display: inline;
+}
+
+nav.crumbs li + li::before {
+  content: "/";
+  color: var(--text-muted);
+  margin: 0 0.4rem;
+}
+
+/* Cards for the resource links on the landing page. */
+ul.resources {
+  list-style: none;
+  padding: 0;
+}
+
+ul.resources li {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  background: var(--background-alt);
+}
+
+ul.resources a {
+  font-weight: 600;
+}
+
+ul.resources p {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* A media type or format label. */
+.badge {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 0.35rem;
+  margin-left: 0.4rem;
+  white-space: nowrap;
+}
+
+footer.colophon {
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+footer.colophon p {
+  margin: 0.3rem 0;
+}
+
+/* Facts line under a collection card. */
+ul.resources p.facts {
+  font-size: 0.85rem;
+}
+
+/* Conformance class list. */
+ul.classes {
+  list-style: none;
+  padding: 0;
+}
+
+ul.classes li {
+  margin-bottom: 0.6rem;
+  line-height: 1.4;
+}
+
+ul.classes code {
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+/* Extent definition list, laid out as label/value pairs on wide screens. */
+dl.extent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 1.5rem;
+  margin: 0 0 1.5rem;
+}
+
+dl.extent dt {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+dl.extent dd {
+  margin: 0;
+}
+
+dl.extent small {
+  color: var(--text-muted);
+}
+
+@media (max-width: 34rem) {
+  dl.extent {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+
+  dl.extent dd {
+    margin-bottom: 0.8rem;
+  }
+}
+
+/* Parameter filter and table. */
+p.filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Spaced by margin for the same reason as `p.pair` above: `gap` is ignored on
+   flex containers in Safari before 14.1. */
+p.filter > * + * {
+  margin-left: 0.5rem;
+}
+
+p.filter input {
+  flex: 1 1 16rem;
+  /* Clear the margins water.css puts on inputs, but not `margin-left`: this
+     selector outranks the `> * + *` gutter above, so a blanket `margin: 0`
+     would silently pull the box flush against the "Filter" label. */
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+/* The tally beside the filter box. Matched on the attribute the script writes
+   into, so renaming it cannot leave this rule pointing at nothing. */
+p.filter [data-filter-count] {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* The parameter table is wide and long; scroll it in its own box rather than
+   the page. The scrolling lives on a wrapper: making the table itself
+   `display: block` would disable table layout and stop the header cells
+   lining up with the body. */
+.table-scroll {
+  overflow: auto;
+  max-height: 32rem;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.table-scroll table {
+  margin: 0;
+  border: 0;
+  /* water.css sets `table-layout: fixed`, which divides the width equally
+     between columns whatever they hold — so a 63-character parameter name gets
+     a quarter of the table and spills into the description beside it. Sizing
+     to content is what a data table wants, and the wrapper scrolls if the
+     result comes out wider than the page. */
+  table-layout: auto;
+}
+
+table#parameters thead th {
+  position: sticky;
+  top: 0;
+  background: var(--background-alt);
+}
+
+table#parameters td {
+  vertical-align: top;
+}
+
+table#parameters code {
+  /* Parameter names run to 63 characters and have no spaces to break at.
+     Allow a break anywhere, so a long one wraps inside its cell instead of
+     overflowing it — `nowrap` here is what made them overlap. */
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+p.alternate {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Forms. water.css styles the controls; these lay the fields out. */
+form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+form input[type="text"],
+form input[type="number"],
+form select {
+  width: 100%;
+  margin-bottom: 0.2rem;
+}
+
+form small.muted {
+  display: block;
+  font-size: 0.8rem;
+}
+
+form p {
+  margin-bottom: 1.2rem;
+}
+
+/* Two controls side by side, stacking when there is no room. */
+p.pair {
+  display: flex;
+  flex-wrap: wrap;
+  /* The gutter is a margin, not `gap`. Safari before 14.1 supports `gap` for
+     grid but ignores it on a flex container, which renders the two controls
+     flush against each other with no hint that anything is wrong. A margin
+     works everywhere. The negative margin here cancels the leading gutter on
+     each line, so these fields still line up with the ones above and below,
+     and a wrapped line is not indented. */
+  margin-left: -1.5rem;
+}
+
+p.pair > span {
+  flex: 1 1 10rem;
+  margin-left: 1.5rem;
+}
+
+p.error {
+  border-left: 4px solid var(--highlight);
+  background: var(--background-alt);
+  padding: 0.75rem 1rem;
+  border-radius: 0 6px 6px 0;
+}
+
+/* The parameter table, shared by the collection page and the query form. Both
+   scroll inside a box of fixed height, so filtering never resizes the page
+   around them. */
+.catalogue {
+  height: 24rem;
+}
+
+/* The checkbox column: only as wide as it needs to be. */
+table#parameters th.tick,
+table#parameters td.tick {
+  width: 1.5rem;
+  padding-right: 0;
+}
+
+table#parameters td.tick input {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Clicking a name ticks its box, so it should read as a control. */
+table#parameters td label {
+  display: inline;
+  font-weight: normal;
+  cursor: pointer;
+  margin: 0;
+}
+
+/* A header that is there for screen readers but has nothing to show. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+fieldset.parameters {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.2rem;
+}
+
+fieldset.parameters > legend {
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 0.2rem;
+}
+
+
+/* A shell command with a button to copy it. The button sits above the block
+   rather than over it: these commands wrap to several lines, and anything
+   floating on top would cover one of them. */
+.command {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 1.2rem;
+}
+
+.command pre {
+  width: 100%;
+  margin: 0.25rem 0 0;
+}
+
+.command .copy {
+  margin: 0;
+  padding: 0.15rem 0.8rem;
+  font-size: 0.75rem;
+}

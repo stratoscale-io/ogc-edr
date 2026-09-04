@@ -3,6 +3,7 @@
 //! EDR data queries are translated into SQL over the Zarr store, which
 //! [`zarr_datafusion`] pushes down to chunk reads.
 
+pub mod api;
 pub mod axis;
 pub mod catalog;
 pub mod config;
