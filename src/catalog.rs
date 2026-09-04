@@ -195,9 +195,22 @@ impl Catalog {
             .build();
         let ctx = SessionContext::new_with_state(state);
 
+        // A task per store: each costs a round of reads to learn its axes —
+        // tens of seconds for one the size of ERA5's hourly time coordinate —
+        // and they do not depend on one another. Tasks rather than futures
+        // joined on this one, because the scan that reads an axis blocks its
+        // thread while it decompresses.
+        let opened = futures::future::try_join_all(configs.iter().map(|cfg| {
+            let ctx = ctx.clone();
+            let cfg = cfg.clone();
+            tokio::spawn(async move { load_collection(&ctx, &cfg).await })
+        }))
+        .await
+        .map_err(|e| EdrError::Internal(format!("Could not open collections: {e}")))?;
+
         let mut collections = BTreeMap::new();
-        for cfg in configs {
-            let collection = load_collection(&ctx, cfg).await?;
+        for collection in opened {
+            let collection = collection?;
             collections.insert(collection.id.clone(), Arc::new(collection));
         }
         Ok(Self { ctx, collections })

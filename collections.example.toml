@@ -1,0 +1,40 @@
+# Example configuration. Point the server at it with:
+#
+#   EDR_CONFIG=collections.example.toml cargo run
+#
+# Every field outside [[collections]] is optional and shown here with its
+# default.
+
+# bind = "0.0.0.0:3000"
+# base_url = ""            # prefix for link hrefs; empty means root-relative
+
+# max_values    — the server's own ceiling on a single read (grid cells ×
+#                 timesteps × parameters). Protects the process; a caller
+#                 cannot raise it.
+# default_limit — how much a request gets back when it does not say.
+# max_values = 5000000
+# default_limit = 100000
+
+# Only `id` and `location` are required. The axes, extents, resolution and
+# every parameter with its units are read from the store itself at startup.
+[[collections]]
+id = "era5"
+location = "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3"
+title = "ERA5"
+description = """
+ECMWF ERA5 global atmospheric reanalysis, analysis-ready 0.25° hourly data \
+served from a cloud-optimised Zarr store."""
+keywords = ["ERA5", "reanalysis", "ECMWF", "climate", "weather"]
+
+# A second store from the same archive, on 137 hybrid model levels rather than
+# 37 pressure levels — so it also exercises whether the vertical axis is
+# discovered rather than assumed to be called `level`.
+[[collections]]
+id = "era5-model-level"
+location = "gs://gcp-public-data-arco-era5/ar/model-level-1h-0p25deg.zarr-v1"
+title = "ERA5 model levels"
+description = """
+ECMWF ERA5 on 137 hybrid model levels, 0.25° hourly."""
+keywords = ["ERA5", "reanalysis", "ECMWF", "model levels"]
+# Expose only some variables. Omit to serve every variable in the store.
+parameters = ["temperature", "specific_humidity", "u_component_of_wind", "v_component_of_wind"]

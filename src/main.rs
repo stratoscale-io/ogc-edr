@@ -15,7 +15,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .init();
 
-    let config = Config::from_env()?;
+    let config = Config::load()?;
     // Opening a collection reads its coordinate axes, so this is where a bad
     // store location or unreachable bucket surfaces — before the port is bound.
     let catalog = Catalog::open(&config.collections).await?;
