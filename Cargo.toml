@@ -1,0 +1,29 @@
+[package]
+name = "ogc-edr"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Local checkout is 0.1.1 (crates.io has 0.1.0); the path dep keeps us on the
+# working copy while the `version` key stays valid for a future publish.
+zarr-datafusion = { version = "0.1", path = "../zarr-datafusion" }
+arrow = "58"
+datafusion = "54.0.0"
+axum = "0.8.9"
+serde_json = "1.0.151"
+tokio = { version = "1.53.1", features = ["macros", "rt-multi-thread"] }
+serde = { version = "1", features = ["derive"] }
+toml = "0.9"
+chrono = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+futures = "0.3"
+# `axum` feature makes Markup an IntoResponse, so handlers can return it directly.
+maud = { version = "0.27", features = ["axum"] }
+# Same version zarr-datafusion uses, so its `AsyncReadableListableStorage` and our
+# raw `.zmetadata` / `.zattrs` reads share one set of storage traits.
+zarrs = "0.22.10"
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
