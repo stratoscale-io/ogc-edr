@@ -6,4 +6,5 @@
 pub mod axis;
 pub mod catalog;
 pub mod config;
+pub mod edr;
 pub mod error;
