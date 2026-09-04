@@ -4,4 +4,6 @@
 //! [`zarr_datafusion`] pushes down to chunk reads.
 
 pub mod axis;
+pub mod catalog;
+pub mod config;
 pub mod error;
