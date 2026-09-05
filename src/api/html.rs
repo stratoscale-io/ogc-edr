@@ -229,7 +229,7 @@ pub fn page(state: &AppState, title: &str, crumbs: &[Crumb], content: Markup) ->
                     }
                     p {
                         "Served by "
-                        a href="https://github.com/jayendra13/zarr-datafusion" { "zarr-datafusion" }
+                        a href="https://github.com/stratoscale-io/zarr-datafusion" { "zarr-datafusion" }
                         " — SQL over Zarr, pushed down to chunk reads."
                     }
                 }

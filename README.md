@@ -3,7 +3,7 @@
 An [OGC API - Environmental Data Retrieval](https://ogcapi.ogc.org/edr/) server
 over ERA5 reanalysis held as cloud-optimised Zarr. EDR queries are translated
 into SQL and executed by
-[zarr-datafusion](https://github.com/jayendra13/zarr-datafusion), which pushes
+[zarr-datafusion](https://github.com/stratoscale-io/zarr-datafusion), which pushes
 coordinate predicates down to Zarr chunk reads.
 
 ```bash
