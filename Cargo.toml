@@ -4,9 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-# Local checkout is 0.1.1 (crates.io has 0.1.0); the path dep keeps us on the
-# working copy while the `version` key stays valid for a future publish.
-zarr-datafusion = { version = "0.1", path = "../zarr-datafusion" }
+# Pinned to a revision rather than a crates.io version: the published 0.1.0
+# targets datafusion 51 / arrow 57 and lacks `ZarrTable::store_meta`, which is
+# how the catalogue learns a store's coordinates. This revision declares the
+# same datafusion 54 / arrow 58 as we do. Move to a plain version once a
+# release carrying those APIs is published — it should be 0.2.0, since the
+# datafusion bump breaks anything depending on 0.1.
+zarr-datafusion = { git = "https://github.com/jayendra13/zarr-datafusion", rev = "6d1f0de333450e62867e44332d09a41e88340f06" }
 arrow = "58"
 datafusion = "54.0.0"
 axum = "0.8.9"
